@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${title}">Dossier PDF</title>
+    <style>
+        /* Base styles from the new model */
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #333;
+            font-size: 10pt;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: auto;
+            display: block;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #333;
+            font-size: 10pt;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #e9f0fb;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .header-content {
+            text-align: center;
+            display: block;
+        }
+
+        .header-logo img {
+            width: 80px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .header-info {
+            font-size: 10.5pt;
+            line-height: 1.5;
+            margin-top: 8px;
+            text-align: center;
+            display: block;
+        }
+
+        .line {
+            border-top: 2px solid #0046ad;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .sousheader {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #f4f4f4;
+            border-left: 5px solid #0046ad;
+            border-radius: 5px;
+            display: block;
+        }
+
+        .sousheader-title {
+            font-size: 13pt;
+            font-weight: bold;
+            color: #0046ad;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .sousheader-info {
+            font-size: 9.5pt;
+            line-height: 1.5;
+            display: block;
+        }
+
+        /* Styling for the main text content */
+        .dossier-full-text-content {
+            margin-top: 25px;
+            margin-bottom: 20px;
+            font-size: 10.5pt;
+            line-height: 1.6;
+            text-align: justify;
+            padding: 0 15px; /* Add some horizontal padding */
+        }
+        .dossier-full-text-content strong {
+            color: #0046ad;
+            font-weight: bold;
+        }
+        .dossier-full-text-content .section-heading {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            display: block; /* Ensure it starts on a new line */
+        }
+
+        /* List styling for files and decisions within text */
+        .dossier-full-text-content ul {
+            list-style-type: disc; /* Use discs for lists */
+            padding-left: 20px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        .dossier-full-text-content li {
+            margin-bottom: 5px;
+        }
+
+
+        /* Note (Date Generation) */
+        .note {
+            font-style: italic;
+            color: #777;
+            font-size: 0.9em;
+            margin-top: 15px;
+            text-align: right;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 8pt;
+            border-top: 1px solid #ccc;
+            padding-top: 6px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 2cm;
+            background-color: #f8f8f8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-content">
+        <div class="header-logo">
+            <img src="file:/C:/Users/DELL/new/logo-.png" alt="Logo SARPI"/>
+        </div>
+        <div class="header-info">
+            <strong>Société Algérienne de Réalisation de Projets Industriels</strong><br/>
+            SOCIÉTÉ PAR ACTIONS AU CAPITAL DE 6 000 000 000 DA<br/>
+            Siège Social : 10, Rue Mohamed Taher Semani, Hydra, ALGER<br/>
+            Tél : +213 (0) 23.48.40.01-08-22 &nbsp; | &nbsp; Fax : +213 (0) 23.48.40.13/16
+        </div>
+    </div>
+</div>
+
+<div class="line"></div>
+
+<div class="sousheader">
+    <div class="sousheader-title" th:text="${dossier.numeroDossier}">Commission des Marchés Entreprise</div>
+    <div class="sousheader-info">
+        <div class="data-item">
+            <span style="font-weight: bold;">Date Génération :</span>
+            <span th:text="${#dates.format(currentDate, 'dd/MM/yyyy')}">01/01/2025</span>
+        </div>
+        <div class="data-item">
+            <span style="font-weight: bold;">Mode de Passation :</span>
+            <span th:text="${dossier.typePassation}">Appel d'offres</span>
+        </div>
+    </div>
+</div>
+
+<div class="dossier-full-text-content">
+    <p>
+        Le dossier de numéro <strong><span th:text="${dossier.numeroDossier}">[NUMERO_DOSSIER]</span></strong>,
+        intitulé par "<strong><span th:text="${dossier.intitule}">[INTITULE_DOSSIER]</span></strong>",
+        a été soumis le
+        <span th:if="${dossier.dateSoumission != null}">
+            <strong><span th:text="${#temporals.format(dossier.dateSoumission, 'dd MMMMപ്പെടെ')}"></span></strong>.
+        </span>
+        <span th:unless="${dossier.dateSoumission != null}">
+            la date n'est pas spécifiée.
+        </span>
+    </p>
+
+
+    <div th:if="${(dossier.typePassation == 'APPEL_OFFRE_LANCEMENT' or dossier.typePassation == 'Consultation_Prestataire_de_Lancement' or dossier.typePassation == 'Consultation_Procurement_de_Lancement') and dossier.lancementDetails != null}">
+        <h4 class="section-heading">Détails du Lancement</h4>
+        <p>
+            Pour le lancement, le montant estimé s'élève à <strong><span th:text="${#numbers.formatDecimal(dossier.lancementDetails.montantEstime, 0, 'COMMA', 2, 'POINT')} + ' DZD'"></span></strong>,
+            avec un budget estimé de <strong><span th:text="${#numbers.formatDecimal(dossier.lancementDetails.budgetEstime, 0, 'COMMA', 2, 'POINT')} + ' DZD'"></span></strong>.
+            Le délai de réalisation prévu est de <strong><span th:text="${dossier.lancementDetails.delaiRealisation} + ' jours'"></span></strong>,
+            et la typologie de démarche est <strong><span th:text="${dossier.lancementDetails.typologidemarche}"></span></strong>.
+            Une garantie de <strong><span th:text="${dossier.lancementDetails.garantie}"></span></strong> est également requise.
+        </p>
+    </div>
+
+    <div th:if="${(dossier.typePassation == 'APPEL_OFFRE_ATTRIBUTION' or dossier.typePassation == 'Consultation_Procurement_dAttribution' or dossier.typePassation == 'Consultation_Prestataire_dAttribution') and dossier.attributionDetails != null}">
+        <h4 class="section-heading">Détails d'Attribution</h4>
+        <p>
+            L'attribution a été faite au fournisseur <strong><span th:text="${dossier.attributionDetails.nomFournisseur}"></span></strong>.
+            Le montant du contrat s'élève à <strong><span th:text="${#numbers.formatDecimal(dossier.attributionDetails.montantContrat, 0, 'COMMA', 2, 'POINT')} + ' DZD'"></span></strong>
+            pour une durée de <strong><span th:text="${dossier.attributionDetails.dureeContrat} + ' mois'"></span></strong>
+            et un délai de réalisation de <strong><span th:text="${dossier.attributionDetails.delaiRealisation} + ' mois'"></span></strong>.
+            La typologie de démarche est <strong><span th:text="${dossier.attributionDetails.typologidemarche}"></span></strong>.
+            Une garantie de <strong><span th:text="${dossier.attributionDetails.garantie}"></span></strong> est applicable.
+            <br/>
+            Le fournisseur a une expérience de <strong><span th:text="${dossier.attributionDetails.experiencefournisseur} + ' ans'"></span></strong>
+            et a réalisé <strong><span th:text="${dossier.attributionDetails.nombredeprojetssimilaires}"></span></strong> projets similaires.
+            Sa notation interne est de <strong><span th:text="${dossier.attributionDetails.notationinterne}"></span></strong>,
+            avec un chiffre d'affaires de <strong><span th:text="${#numbers.formatDecimal(dossier.attributionDetails.chiffreaffaire, 0, 'COMMA', 2, 'POINT')} + ' DZD'"></span></strong>.
+            Sa situation fiscale est <strong><span th:text="${dossier.attributionDetails.situationfiscale}"></span></strong>.
+            <br/>
+            Il est
+            <span th:text="${dossier.attributionDetails.fournisseurblacklist ? 'blacklisté' : 'non blacklisté'}"></span>
+            et est de type <strong><span th:text="${dossier.attributionDetails.typeFournisseur}"></span></strong>.
+            <span th:if="${dossier.attributionDetails.fournisseurEtrangerInstallationPermanente}">
+                C'est un fournisseur étranger avec une installation permanente.
+            </span>
+            <span th:unless="${dossier.attributionDetails.fournisseurEtrangerInstallationPermanente}">
+                Ce n'est pas un fournisseur étranger avec installation permanente.
+            </span>
+            <span th:if="${dossier.attributionDetails.originePaysNonDoubleImposition}">
+                Son pays d'origine est en zone de non double imposition.
+            </span>
+            <span th:unless="${dossier.attributionDetails.originePaysNonDoubleImposition}">
+                Son pays d'origine n'est pas en zone de non double imposition.
+            </span>
+        </p>
+    </div>
+
+    <div th:if="${dossier.typePassation == 'AVENANT' and dossier.avenantDetails != null}">
+        <h4 class="section-heading">Détails d'Avenant</h4>
+        <p>
+            Cet avenant concerne le contrat numéro <strong><span th:text="${dossier.avenantDetails.numeroContrat}"></span></strong>,
+            signé le
+            <span th:if="${dossier.avenantDetails.dateSignatureContrat != null}" th:text="${#temporals.format(dossier.avenantDetails.dateSignatureContrat, 'dd-MM-yyyy')}"></span>
+            <span th:unless="${dossier.avenantDetails.dateSignatureContrat != null}">N/A</span>.
+            Initialement, ce contrat avait une durée de <strong><span th:text="${dossier.avenantDetails.dureeContrat} + ' mois'"></span></strong>
+            et expirait le
+            <span th:if="${dossier.avenantDetails.dateExpirationContrat != null}" th:text="${#temporals.format(dossier.avenantDetails.dateExpirationContrat, 'dd-MM-yyyy')}"></span>
+            <span th:unless="${dossier.avenantDetails.dateExpirationContrat != null}">N/A</span>,
+            pour un montant de <strong><span th:text="${#numbers.formatDecimal(dossier.avenantDetails.montantContrat, 0, 'COMMA', 2, 'POINT')} + ' DZD'"></span></strong>.
+            <br/>
+            L'objet de cet avenant est "<strong><span th:text="${dossier.avenantDetails.objetAvenant}"></span></strong>".
+            Il ajoute un montant de <strong><span th:text="${#numbers.formatDecimal(dossier.avenantDetails.montantAvenant, 0, 'COMMA', 2, 'POINT')} + ' DZD'"></span></strong>
+            et une durée de <strong><span th:text="${dossier.avenantDetails.dureeAvenant} + ' mois'"></span></strong>.
+            Le nouveau montant total du contrat est maintenant de <strong><span th:text="${#numbers.formatDecimal(dossier.avenantDetails.nouveauMontantContrat, 0, 'COMMA', 2, 'POINT')} + ' DZD'"></span></strong>,
+            et sa nouvelle durée totale est de <strong><span th:text="${dossier.avenantDetails.nouvelleDureeContrat} + ' mois'"></span></strong>.
+        </p>
+    </div>
+
+    <div th:if="${dossier.typePassation == 'GRE_A_GRE' and dossier.greAGreDetails != null}">
+        <h4 class="section-heading">Détails Gré à Gré</h4>
+        <p>
+            Les détails pour la passation Gré à Gré sont les suivants : le montant estimé est de <strong><span th:text="${#numbers.formatDecimal(dossier.greAGreDetails.montantEstime, 0, 'COMMA', 2, 'POINT')} + ' DZD'"></span></strong>,
+            avec un budget estimé de <strong><span th:text="${#numbers.formatDecimal(dossier.greAGreDetails.budgetEstime, 0, 'COMMA', 2, 'POINT')} + ' DZD'"></span></strong>.
+            La durée du contrat prévue est de <strong><span th:text="${dossier.greAGreDetails.dureeContrat} + ' mois'"></span></strong>,
+            et le délai de réalisation est de <strong><span th:text="${dossier.greAGreDetails.delaiRealisation} + ' jours'"></span></strong>.
+        </p>
+    </div>
+
+    <div th:if="${dossier.decisions != null and !#lists.isEmpty(dossier.decisions)}">
+        <h4 class="section-heading">Décisions Associées</h4>
+        <p>Les décisions enregistrées pour ce dossier sont les suivantes :</p>
+        <ul>
+            <li th:each="decision : ${dossier.decisions}">
+                <strong>Décision:</strong> <span th:text="${decision.decision}"></span>.
+                Ajoutée le
+                <span th:if="${decision.dateAjout != null}" th:text="${#temporals.format(decision.dateAjout, 'dd-MM-yyyy HH:mm')}"></span>
+                <span th:unless="${decision.dateAjout != null}">N/A</span>.
+                <span th:if="${decision.chargeDossier != null}">
+                    Par le chargé de dossier <strong><span th:text="${decision.chargeDossier.name}"></span></strong> (<span th:text="${decision.chargeDossier.email}"></span>).
+                </span>
+                <span th:unless="${decision.chargeDossier != null}">
+                    Chargé de dossier non spécifié.
+                </span> <br/>
+            </li>
+            <li th:each="decision : ${dossier.decisions}">
+                <span th:if="${decision.compteRendu != null and !#strings.isEmpty(decision.compteRendu)}">
+                    <strong>Compte rendu : </strong> "<span th:text="${decision.compteRendu}"></span>".
+                </span>
+                <span th:unless="${decision.compteRendu != null and !#strings.isEmpty(decision.compteRendu)}">
+                    Aucun compte rendu fourni.
+                </span>
+            </li>
+        </ul>
+    </div>
+    <div th:unless="${dossier.decisions != null and !#lists.isEmpty(dossier.decisions)}">
+        <h4 class="section-heading">Décisions Associées</h4>
+        <p>Aucune décision n'est associée à ce dossier.</p>
+    </div>
+
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Rapport PDF</title>
+    <style>
+        @page {
+            size: A4;
+            margin-top: 2cm;
+            margin-bottom: 2cm; /* Adjust bottom margin for footer space */
+            margin-left: 2cm;
+            margin-right: 2cm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .header {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .header-content {
+            text-align: center;
+        }
+
+        .header-logo img {
+            width: 80px;
+        }
+
+        .header-info {
+            font-size: 11px;
+            line-height: 1.6;
+            margin-top: 5px;
+        }
+
+        .line {
+            border-top: 2px solid #0046ad;
+            margin-top: 10px;
+        }
+
+        main h2 {
+            margin-top: 30px;
+            text-align: left;
+            color: #0046ad;
+            font-size: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            page-break-inside: auto;
+        }
+
+        thead {
+            display: table-header-group; /* Make table header repeat on each page */
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        th {
+            background-color: #0046ad;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 10px;
+            text-align: left;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            font-size: 12px;
+        }
+
+        tbody tr:nth-child(even) td {
+            background-color: #e8e8e8;
+        }
+
+        tbody tr:hover td {
+            background-color: #d0e4f5;
+        }
+
+        .footer {
+            margin-top: auto; /* Try removing this first if fixed works */
+            text-align: center;
+            font-size: 8pt;
+            border-top: 1px solid #ccc;
+            padding-top: 6px;
+            position: fixed; /* Changed to fixed */
+            bottom: 0; /* Stick to the bottom of the viewport */
+            left: 0;
+            right: 0;
+            padding: 10px 2cm; /* Add some padding */
+            background-color: #f8f8f8; /* Optional background for better visibility */
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-content">
+        <div class="header-logo">
+            <img src="file:/C:/Users/DELL/new/logo-.png" alt="Logo SARPI"/>
+        </div>
+        <div class="header-info">
+            <strong>Société Algérienne de Réalisation de Projets Industriels</strong><br/>
+            SOCIÉTÉ PAR ACTIONS AU CAPITAL DE 6 000 000 000 DA<br/>
+            Siège Social : 10, Rue Mohamed Taher Semani, Hydra, ALGER<br/>
+            Tél : +213 (0) 23.48.40.01-08-22 &nbsp; | &nbsp; Fax : +213 (0) 23.48.40.13/16
+        </div>
+    </div>
+</div>
+<div class="line"></div>
+
+<br/><br/>
+Date : <span th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}"></span>
+
+<main>
+    <h2 th:text="${title}">Rapport des Dossiers</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Numéro Dossier</th>
+            <th>Intitulé</th>
+            <th>Mode Passation</th>
+            <th>Date de Soumission</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="dossier : ${dossiers}">
+            <td th:text="${dossier.numeroDossier}"></td>
+            <td th:text="${dossier.intitule}"></td>
+            <td th:text="${dossier.typePassation}"></td>
+            <td th:text="${dossier.dateSoumission}"></td>
+
+        </tr>
+        </tbody>
+    </table>
+
+
+</main>
+<div class="footer">
+    <p>Document généré automatiquement - SARPI &copy; <span th:text="${#dates.format(currentDate, 'yyyy')}"></span></p>
+</div>
+</body>
+</html>

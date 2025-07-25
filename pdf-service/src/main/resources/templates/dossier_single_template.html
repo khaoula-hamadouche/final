@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${title}">Dossier PDF</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #333;
+            font-size: 10pt;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: auto; /* Changed */
+            display: block; /* Changed */
+            flex-direction: column; /* Removed */
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #333;
+            font-size: 10pt;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #e9f0fb;
+            border-radius: 8px;
+            display: block; /* Add this */
+        }
+
+        .header-content {
+            text-align: center;
+            display: block; /* Add this */
+        }
+
+        .header-logo img {
+            width: 80px;
+            display: block; /* Add this */
+            margin: 0 auto; /* Center the logo */
+        }
+
+        .header-info {
+            font-size: 10.5pt;
+            line-height: 1.5;
+            margin-top: 8px;
+            text-align: center; /* Center the info */
+            display: block; /* Add this */
+        }
+
+        .line {
+            border-top: 2px solid #0046ad;
+            margin-top: 10px;
+            display: block; /* Add this */
+        }
+
+        .sousheader {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #f4f4f4;
+            border-left: 5px solid #0046ad;
+            border-radius: 5px;
+            display: block; /* Add this */
+        }
+
+        .sousheader-title {
+            font-size: 13pt;
+            font-weight: bold;
+            color: #0046ad;
+            margin-bottom: 5px;
+            display: block; /* Add this */
+        }
+
+        .sousheader-info {
+            font-size: 9.5pt;
+            line-height: 1.5;
+            display: block; /* Add this */
+        }
+
+        .dossier-info-container {
+            margin-top: 20px;
+            font-size: 10pt;
+            display: block; /* Add this */
+        }
+
+        .dossier-number-box {
+            border: 1px solid #0046ad;
+            padding: 8px 12px;
+            display: inline-block;
+            font-weight: bold;
+            background-color: #fefefe;
+            border-radius: 4px;
+        }
+
+        .data-item {
+            margin-bottom: 6px;
+            display: block; /* Add this */
+        }
+
+        .label {
+
+            font-weight: bold;
+
+            display: inline-block;
+
+            width: 140px;
+
+        }
+
+
+
+        .files-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin-top: 20px;
+
+            font-size: 9pt;
+
+        }
+
+        .files-table th, .files-table td {
+            border: 1px solid #bbb;
+            padding: 8px;
+            text-align: left;
+            display: table-cell;
+        }
+
+        .files-table th {
+            background-color: #dbe6f4;
+            font-weight: bold;
+            color: #002d72;
+            display: table-cell;
+        }
+
+        .files-table tbody tr {
+            display: table-row;
+        }
+
+        .files-table tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+        .footer {
+            margin-top: auto; /* Try removing this first if fixed works */
+            text-align: center;
+            font-size: 8pt;
+            border-top: 1px solid #ccc;
+            padding-top: 6px;
+            position: fixed; /* Changed to fixed */
+            bottom: 0; /* Stick to the bottom of the viewport */
+            left: 0;
+            right: 0;
+            padding: 10px 2cm; /* Add some padding */
+            background-color: #f8f8f8; /* Optional background for better visibility */
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-content">
+        <div class="header-logo">
+            <img src="file:/C:/Users/DELL/new/logo-.png" alt="Logo SARPI"/>
+        </div>
+        <div class="header-info">
+            <strong>Société Algérienne de Réalisation de Projets Industriels</strong><br/>
+            SOCIÉTÉ PAR ACTIONS AU CAPITAL DE 6 000 000 000 DA<br/>
+            Siège Social : 10, Rue Mohamed Taher Semani, Hydra, ALGER<br/>
+            Tél : +213 (0) 23.48.40.01-08-22 &nbsp; | &nbsp; Fax : +213 (0) 23.48.40.13/16
+        </div>
+    </div>
+</div>
+
+<div class="line"></div>
+
+<!-- SOUS-HEADER -->
+<div class="sousheader">
+    <div class="sousheader-title" th:text="${dossier.intitule}">Commission des Marchés Entreprise</div>
+    <div class="sousheader-info">
+        <div class="data-item">
+            <span class="label">Date :</span>
+            <span th:text="${#dates.format(currentDate, 'dd/MM/yyyy')}">01/01/2025</span>
+        </div>
+        <div class="data-item">
+            <span class="label">Mode de Passation :</span>
+            <span th:text="${dossier.typePassation}">Appel d'offres</span>
+        </div>
+    </div>
+</div>
+
+
+<!-- INFOS DOSSIER -->
+<div class="dossier-info-container">
+    <span class="label">Dossier N° :</span>
+    <div class="dossier-number-box" th:text="${dossier.numeroDossier}">XXXX</div>
+</div>
+
+<!-- TABLEAU DES FICHIERS -->
+<table class="files-table">
+    <thead>
+    <tr>
+        <th>N°</th>
+        <th>Nom de Fichier</th>
+        <th>Nombre de Fichiers</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="fileName, index : ${dossier.fileNames}">
+        <td th:text="${index.count}">1</td>
+        <td th:text="${fileName}">document.pdf</td>
+        <td>1</td>
+    </tr>
+    </tbody>
+</table>
+
+
+
+<!-- FOOTER -->
+<div class="footer">
+    <p>Document généré automatiquement - SARPI &copy; <span th:text="${#dates.format(currentDate, 'yyyy')}"></span></p>
+</div>
+
+</body>
+</html>

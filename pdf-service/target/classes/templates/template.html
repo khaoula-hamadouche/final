@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Rapport PDF</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm 2cm 2.5cm 2cm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .header {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .header-content {
+            text-align: center;
+        }
+
+        .header-logo img {
+            width: 80px;
+        }
+
+        .header-info {
+            font-size: 11px;
+            line-height: 1.6;
+            margin-top: 5px;
+        }
+
+        .line {
+            border-top: 2px solid #0046ad;
+            margin-top: 10px;
+        }
+
+        main h2 {
+            margin-top: 30px;
+            text-align: left;
+            color: #0046ad;
+            font-size: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            page-break-inside: auto;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #0046ad;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 10px;
+            text-align: left;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            font-size: 12px;
+        }
+
+        tbody tr:nth-child(even) td {
+            background-color: #e8e8e8;
+        }
+
+        tbody tr:hover td {
+            background-color: #d0e4f5;
+        }
+
+        .roles-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .roles-list li {
+            background-color: #edf4fc;
+            padding: 5px;
+            border-radius: 5px;
+            margin-bottom: 3px;
+            display: inline-block;
+            color: #0046ad;
+            font-size: 12px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10px;
+            margin-top: 20px;
+        }
+
+        .footer .line {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <div class="header-content">
+        <div class="header-logo">
+            <img src="file:/C:/Users/DELL/new/logo-.png" alt="Logo SARPI"/>
+        </div>
+        <div class="header-info">
+            <strong>Société Algérienne de Réalisation de Projets Industriels</strong><br/>
+            SOCIÉTÉ PAR ACTIONS AU CAPITAL DE 6 000 000 000 DA<br/>
+            Siège Social : 10, Rue Mohamed Taher Semani, Hydra, ALGER<br/>
+            Tél : +213 (0) 23.48.40.01-08-22 &nbsp; | &nbsp; Fax : +213 (0) 23.48.40.13/16
+        </div>
+    </div>
+</div>
+<div class="line"></div>
+
+<!-- Main Content -->
+<main>
+    <h2 th:text="${title}">Rapport des utilisateurs</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Rôles</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${utilisateurs}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.email}"></td>
+            <td>
+                <ul class="roles-list">
+                    <li th:each="role : ${user.roles}" th:text="${role.name}"></li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<!-- Footer -->
+<div class="footer">
+    <div class="line"></div>
+    <div>
+        Date : <span th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}"></span>
+    </div>
+</div>
+
+</body>
+</html>
